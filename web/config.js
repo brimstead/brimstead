@@ -23,7 +23,7 @@ export const CONFIG = {
   links: {
     x: 'https://x.com/brimsteadxyz',
     xHandle: '@brimsteadxyz',
-    repo: '', // public repo URL, empty = "to be announced"
+    repo: 'https://github.com/brimstead/brimstead',
   },
 
   contracts: {
