@@ -1,0 +1,11 @@
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+keeper/node_modules/
+*.password
+keystore*
+.env
+.env.*
+!keeper/deploy/keeper.env.example
+.DS_Store

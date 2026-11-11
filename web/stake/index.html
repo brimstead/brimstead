@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stake $BRIM · Brimstead</title>
+<meta name="description" content="BrimDrip: stake $BRIM and receive ETH streamed linearly over 7 days from the vault's protocol fee and creator fees sent by the team.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/stake/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="Stake $BRIM · BrimDrip">
+<meta property="og:description" content="Stake $BRIM, receive ETH streamed over 7 days. No promised returns.">
+<meta property="og:url" content="https://brimstead.xyz/stake/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/app.css">
+<script type="importmap">
+{ "imports": { "viem": "https://cdn.jsdelivr.net/npm/viem@2.31.0/+esm" } }
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body class="app">
+<header id="nav"></header>
+<main class="page app-page">
+  <div class="app-in">
+    <div class="app-head">
+      <div>
+        <p class="eyebrow"><span class="pip hot"></span>BrimDrip · Robinhood Chain 4663</p>
+        <h1>Stake $BRIM.</h1>
+      </div>
+      <div class="wallet-box">
+        <span class="net mono" data-net>Robinhood Chain · 4663</span>
+        <button class="btn btn-ink btn-sm" data-connect type="button">Connect wallet</button>
+      </div>
+    </div>
+    <p class="lede" style="max-width:62ch;margin-top:18px">Stake $BRIM and receive ETH. Every wei of ETH that BrimDrip receives is streamed to stakers, pro rata to stake, over 7 days. The ETH comes from the vault's 1% fee on premiums (taken at settlement) and from Pons creator fees the team sends in by hand after launch. No promised returns: the stream is only as large as those inflows.</p>
+
+    <div class="deploy-state" data-deploy-state></div>
+    <div class="app-ca" data-ca-strip></div>
+
+    <div class="stat-grid" data-stats></div>
+    <div class="card kick-box" data-kick></div>
+
+    <div class="grid2">
+      <div class="card form">
+        <h2>Your stake</h2>
+        <div class="live-line"><span>Staked</span><b class="mono" data-my-staked>·</b></div>
+        <div class="live-line"><span>Claimable ETH</span><b class="mono hot" data-my-earned>·</b></div>
+        <div class="live-line"><span>$BRIM in wallet</span><b class="mono" data-my-bal>·</b></div>
+        <label>Amount of $BRIM
+          <input inputmode="decimal" placeholder="e.g. 1000" data-amt>
+        </label>
+        <p class="form-err" data-err role="alert"></p>
+        <div class="form-actions">
+          <button class="btn btn-hot" type="button" data-stake>Stake</button>
+          <button class="btn" type="button" data-unstake>Unstake</button>
+          <button class="btn" type="button" data-claim>Claim ETH</button>
+        </div>
+        <p class="fine">Staking opens after launch, once the $BRIM address is set in BrimDrip (a one-time step). Staking does not start a stream by itself; use Start stream above when it is available.</p>
+      </div>
+      <aside class="card">
+        <h3 style="font-size:24px;margin:0 0 10px">How the drip works</h3>
+        <ol class="small" style="padding-left:1.1em">
+          <li>ETH arrives in BrimDrip: the vault's fee at each settlement, creator fees the team forwards, or anyone's payment.</li>
+          <li>It waits in the queue until at least 0.005 ETH has gathered, so small payments do not keep pushing the end date back.</li>
+          <li>Then a new 7-day stream starts: what is left of the current stream plus the queue, spread evenly. A payment that crosses the threshold starts it; otherwise anyone can press Start stream.</li>
+          <li>Your share of the stream equals your share of all staked $BRIM while you are staked. While nobody is staked, nothing is given away: it goes back to the queue.</li>
+          <li>Claim whenever you like. Unstake at any time; rewards earned stay claimable.</li>
+        </ol>
+        <p class="fine">Independent review completed; not a formal audit. See <a href="/risks/">Risks</a> and <a href="/token/">$BRIM</a>.</p>
+      </aside>
+    </div>
+  </div>
+</main>
+<div class="toasts" data-toasts role="status" aria-live="polite"></div>
+<footer id="foot"></footer>
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/stake.js"></script>
+</body>
+</html>

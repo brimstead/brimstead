@@ -1,0 +1,13 @@
+# /etc/systemd/system/brimstead-keeper.timer - run the keeper every 2 minutes.
+[Unit]
+Description=Run the Brimstead keeper every 2 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=2min
+AccuracySec=10s
+Persistent=false
+Unit=brimstead-keeper.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Risks · Brimstead</title>
+<meta name="description" content="The risks of using Brimstead: new contracts (reviewed, not formally audited), issuer pause and block controls, Chainlink 24/5 gaps, writer and buyer risks.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/risks/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="Risks · Brimstead">
+<meta property="og:description" content="The risks of using Brimstead: new contracts (reviewed, not formally audited), issuer pause and block controls, Chainlink 24/5 gaps, writer and buyer risks.">
+<meta property="og:url" content="https://brimstead.xyz/risks/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:title" content="Risks · Brimstead">
+<meta name="twitter:description" content="The risks of using Brimstead: new contracts (reviewed, not formally audited), issuer pause and block controls, Chainlink 24/5 gaps, writer and buyer risks.">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body>
+<header id="nav"></header>
+<main class="page">
+  <article class="page-in">
+    <p class="eyebrow"><span class="pip" style="background:var(--risk)"></span>Risks</p>
+    <h1>Read this first.</h1>
+    <p class="lede">Brimstead is new software that moves real tokens and ETH. These are the risks we know about.</p>
+
+    <h2 class="risk">Smart contracts</h2>
+    <ul>
+      <li><b>Independent review completed (no critical/high/medium findings); not a formal audit.</b> A review does not catch everything; a bug could still lose funds.</li>
+      <li><b>No admin, no upgrade.</b> Nobody can pause the vault or change its rules, which also means nobody can fix a bug or rescue funds.</li>
+    </ul>
+
+    <h2 class="risk">For writers</h2>
+    <ul>
+      <li>If the stock closes above your strike on Friday, part of your tokens goes to the buyers. You give up all gains above the strike for the premium.</li>
+      <li>You still carry the full downside of the stock. The premium does not protect you from a fall.</li>
+      <li>Tokens a buyer has paid for stay locked until the offer resolves: normally after the Friday close, up to 4 days later if a refund is needed, and up to 30 days in the worst case.</li>
+    </ul>
+
+    <h2 class="risk">For buyers</h2>
+    <ul>
+      <li>If the stock does not close above the strike, you lose the whole premium.</li>
+      <li>You are paid in stock tokens, not in cash, so their value keeps moving after settlement.</li>
+      <li>Positions cannot be sold or transferred before expiry.</li>
+    </ul>
+
+    <h2 class="risk">Weekend quotes</h2>
+    <ul>
+      <li>Over the weekend, buys are checked against Friday's last Chainlink print. A writer's quote can be stale against Monday news. Writers can withdraw unsold tokens at any time to pull it.</li>
+    </ul>
+
+    <h2 class="risk">Issuer controls</h2>
+    <ul>
+      <li>Robinhood issues the stock tokens and can <b>pause</b> them, <b>block</b> any address (including the vault), pause their oracle, burn balances by admin action, and upgrade the token's code.</li>
+      <li>A blocked buyer or writer only blocks that side's token claim; ETH still flows. A blocked vault or a paused token stops every token movement of that stock until it is lifted.</li>
+      <li>If the issuer burns tokens held by the vault, the last people to claim that stock may be unable to claim.</li>
+      <li>If the issuer pauses the oracle or schedules a corporate action around expiry, the offer is refunded instead of settled.</li>
+      <li>The refund path checks the issuer's oracle-pause flag at the moment it is called, not at expiry. A pause that starts after expiry can therefore turn a settleable offer into a refund. A keeper settles offers as soon as the next Chainlink round after the close exists, which keeps that window short.</li>
+    </ul>
+
+    <h2 class="risk">Price feeds</h2>
+    <ul>
+      <li>Settlement relies entirely on Chainlink. A wrong price in the feed is used as is.</li>
+      <li>The close is the last price Chainlink printed (feeds update on a 0.5% move or every 24 hours), so it can lag the true close by about 0.5% and be up to 26 hours old.</li>
+      <li><b>Chainlink stock feeds run 24/5</b> and have weekend and holiday gaps. Writing pauses over weekends; settlement waits for the next round after the Friday close; a missing close leads to a refund after 4 days.</li>
+      <li>The Friday close is the last feed round at or before 21:00 UTC. That is not always the same moment as the official exchange close; US daylight saving time moves the exchange close by an hour.</li>
+    </ul>
+
+    <h2 class="risk">Network and wallets</h2>
+    <ul>
+      <li>Robinhood Chain is a young network. Outages, reorganisations or high fees can delay transactions. The vault has no sequencer uptime check: an outage delays settlement and claims.</li>
+      <li>You sign every transaction yourself. Check the contract address against the one on <a href="/docs/#contracts">Docs</a> and Blockscout.</li>
+    </ul>
+
+    <h2 class="risk">$BRIM</h2>
+    <ul>
+      <li>No promised returns. The BrimDrip stream depends on vault fees and on creator fees forwarded by hand by the team, and can be small or zero.</li>
+      <li>Payments under 0.005 ETH wait in BrimDrip's queue until they add up, so small fees can take a long time to start streaming.</li>
+      <li>The $BRIM address is set in BrimDrip once and cannot be changed. A mistake there would require new contracts.</li>
+      <li>ETH forced into BrimDrip outside its normal paths is not counted and stays stuck. $BRIM must behave as a standard ERC-20.</li>
+      <li>The token can lose all of its value.</li>
+    </ul>
+
+    <div class="note warn">Nothing on this site is financial advice. Only use amounts you can afford to lose.</div>
+  </article>
+</main>
+<footer id="foot"></footer>
+<script type="module" src="/js/common.js"></script>
+</body>
+</html>

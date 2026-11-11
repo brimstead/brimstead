@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brimstead · Keep your stock. Sell the brim.</title>
+<meta name="description" content="Covered calls for tokenized stocks on Robinhood Chain. Lock your stock tokens, pick a weekly strike, earn an ETH premium. Settled on Chainlink.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="Brimstead · Keep your stock. Sell the brim.">
+<meta property="og:description" content="Covered calls for tokenized stocks on Robinhood Chain. Weekly strikes, ETH premium, settled on Chainlink.">
+<meta property="og:url" content="https://brimstead.xyz/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:title" content="Brimstead · Keep your stock. Sell the brim.">
+<meta name="twitter:description" content="Covered calls for tokenized stocks on Robinhood Chain. Weekly strikes, ETH premium, settled on Chainlink.">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/landing.css">
+<script>
+  (function () {
+    var d = document.documentElement, gl = false;
+    try { var c = document.createElement('canvas'); gl = !!(window.WebGL2RenderingContext && c.getContext('webgl2')); } catch (e) {}
+    var rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (/[?&]static\b/.test(location.search)) gl = false;
+    d.classList.add(gl && !rm ? 'gl' : 'no-gl');
+    if (rm) d.classList.add('rm');
+  })();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.181.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.181.0/examples/jsm/",
+  "viem": "https://cdn.jsdelivr.net/npm/viem@2.31.0/+esm"
+} }
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body class="landing" data-motion="custom">
+<header id="nav"></header>
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div id="smooth-wrapper"><div id="smooth-content">
+<main>
+  <!-- 1 · HERO -->
+  <section class="hero" id="top">
+    <div class="hero-in wrap">
+      <p class="eyebrow hero-eyebrow"><span class="pip"></span>Covered calls · Robinhood Chain 4663</p>
+      <h1 class="hero-h" data-split="custom" aria-label="Keep your stock. Sell the brim.">
+        <span class="hl hl-1" aria-hidden="true">Keep your stock.</span>
+        <span class="hl hl-2" aria-hidden="true">Sell the <em class="brim-word">brim.</em></span>
+      </h1>
+      <img class="vessel-fallback hero-fallback" src="/img/vessel.png" width="900" height="900" alt="A stoneware jar filled with cobalt glaze to an orange brim">
+      <div class="hero-foot">
+        <p class="hero-sub">Covered calls for tokenized stocks on Robinhood Chain. Lock your shares, pick a weekly strike, set a premium in ETH. Settled at the Chainlink close of Friday 21:00 UTC.</p>
+        <div class="hero-cta">
+          <a class="btn btn-hot" href="/app/">Open the vault <span class="arr">→</span></a>
+          <a class="btn btn-mag" href="/docs/">How it works</a>
+        </div>
+      </div>
+      <div class="hero-ca" data-ca-strip></div>
+    </div>
+  </section>
+
+  <!-- 2 · STATEMENT -->
+  <section class="statement" id="statement">
+    <div class="wrap statement-in">
+      <p class="eyebrow"><span class="pip"></span>Fully collateralised</p>
+      <h2 class="statement-h" data-split="custom">Your shares never leave the vault.</h2>
+      <div class="statement-sub">
+        <p>No lending, no borrower, no liquidation. Your stock tokens sit in the contract for the week. The only way a token leaves is back to you, or to the buyer for the part above the strike.</p>
+        <a class="btn btn-sm btn-mag" href="/docs/#how">Read the mechanism <span class="arr">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · PINNED POUR -->
+  <section class="feature" id="vault">
+    <div class="feature-pin">
+      <div class="wrap feature-in">
+        <div class="feature-card">
+          <div class="fc-top">
+            <p class="eyebrow"><span class="pip"></span>One call, start to finish</p>
+            <ol class="fsteps" aria-hidden="true"><li class="is-on">1</li><li>2</li><li>3</li></ol>
+          </div>
+          <h2 class="feature-h" data-split="custom"><span class="fstep is-on" data-step="0">Fill the vessel.</span><span class="fstep" data-step="1">The price rises to the brim.</span><span class="fstep" data-step="2">Above the brim spills to the buyer.</span></h2>
+          <p class="feature-copy" data-copy>The writer locks stock tokens and sets a strike. The brim is the strike.</p>
+
+          <dl class="readout">
+            <div class="ro-row">
+              <dt>NVDA / USD <span class="tag">Chainlink · live</span></dt>
+              <dd class="cobalt" data-live-price>reading…</dd>
+            </div>
+            <div class="ro-row sub"><dt>last round</dt><dd data-live-time>·</dd></div>
+            <div class="ro-row ro-strike">
+              <dt>Strike <span class="tag">example · +5% over live</span></dt>
+              <dd class="hot" data-strike>·</dd>
+              <svg class="strike-line" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="2" x2="100" y2="2" stroke="#FF5B1F" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+            </div>
+            <div class="ro-row">
+              <dt>Price at expiry <span class="tag">example scenario</span></dt>
+              <dd data-scn>·</dd>
+            </div>
+            <div class="ro-split">
+              <div><span class="lbl">Buyer receives</span><b class="hot" data-buyer>0.000</b><span class="u">NVDA</span></div>
+              <div><span class="lbl">Writer keeps</span><b class="cobalt" data-writer>10.000</b><span class="u">NVDA + premium</span></div>
+            </div>
+          </dl>
+          <p class="fine">Example: 10 NVDA tokens written. Payout = amount × (P − K) / P when P is above K, otherwise nothing; the writer keeps the rest. Numbers other than the live price are illustrations.</p>
+        </div>
+        <div class="feature-stage">
+          <img class="vessel-fallback" src="/img/vessel.png" width="900" height="900" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · TOOLS (horizontal pinned) -->
+  <section class="tools" id="tools">
+    <div class="tools-pin">
+      <div class="wrap tools-head">
+        <div>
+          <p class="eyebrow"><span class="pip"></span>Four actions</p>
+          <h2>Everything the vault does.</h2>
+        </div>
+        <p class="tools-hint mono" aria-hidden="true">scroll →</p>
+      </div>
+      <div class="tool-viewport">
+        <div class="tool-track">
+          <a class="tool" href="/app/#write">
+            <span class="tool-n mono">01</span>
+            <svg class="tool-ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 18h36l-4 34H18z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M17 30h30" stroke="#2340D8" stroke-width="10" opacity=".9"/><path d="M12 18h40" stroke="#FF5B1F" stroke-width="3"/></svg>
+            <h3>Write a call</h3>
+            <p>Lock stock tokens, choose a strike above the live Chainlink price and a Friday expiry, set the premium per token in ETH.</p>
+            <span class="tool-more">Explore <span class="arr">→</span></span>
+          </a>
+          <a class="tool" href="/app/#buy">
+            <span class="tool-n mono">02</span>
+            <svg class="tool-ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M22 34h20l-2 18H24z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M24 44h16" stroke="#FF5B1F" stroke-width="8"/><path d="M32 8c0 8-6 10-6 16a6 6 0 0 0 12 0c0-6-6-8-6-16z" fill="#FF5B1F"/></svg>
+            <h3>Buy upside</h3>
+            <p>Pay the premium in ETH for the move above the strike at expiry. Only calls still below the strike can be bought, until 2 hours before expiry.</p>
+            <span class="tool-more">Explore <span class="arr">→</span></span>
+          </a>
+          <a class="tool" href="/app/#settle">
+            <span class="tool-n mono">03</span>
+            <svg class="tool-ic" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M32 18v14l9 6" fill="none" stroke="#2340D8" stroke-width="3" stroke-linecap="round"/><path d="M8 32h6M50 32h6" stroke="#FF5B1F" stroke-width="3"/></svg>
+            <h3>Settle</h3>
+            <p>Anyone can settle at the Friday 21:00 UTC close price once the next Chainlink round prints. If no valid close can exist, both sides are refunded in full.</p>
+            <span class="tool-more">Explore <span class="arr">→</span></span>
+          </a>
+          <a class="tool" href="/app/#portfolio">
+            <span class="tool-n mono">04</span>
+            <svg class="tool-ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 40h40v12H12z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M32 10v24m-9-9 9 9 9-9" fill="none" stroke="#2340D8" stroke-width="3"/><path d="M12 40h40" stroke="#FF5B1F" stroke-width="3"/></svg>
+            <h3>Claim</h3>
+            <p>Buyers claim their stock above the strike, writers claim the rest of their tokens and the premium minus the 1% fee.</p>
+            <span class="tool-more">Explore <span class="arr">→</span></span>
+          </a>
+        </div>
+      </div>
+      <div class="wrap"><svg class="tools-rail" viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="2" x2="1000" y2="2" stroke="#FF5B1F" stroke-width="3" vector-effect="non-scaling-stroke"/></svg></div>
+    </div>
+  </section>
+
+  <!-- 5 · MARQUEE -->
+  <section class="marquee" aria-label="Stock tokens with Chainlink feeds">
+    <div class="wrap mq-head"><p class="eyebrow"><span class="pip"></span>Stock tokens with a Chainlink feed on Robinhood Chain · price per token</p></div>
+    <div class="mq" data-mq><div class="mq-track" data-mq-track></div></div>
+    <div class="mq mq-rev" data-mq aria-hidden="true"><div class="mq-track" data-mq-track2></div></div>
+  </section>
+
+  <!-- 6 · SHOWCASE -->
+  <section class="showcase" id="offers">
+    <div class="wrap">
+      <div class="sec-head row">
+        <div>
+          <p class="eyebrow"><span class="pip"></span>Open offers · read from chain</p>
+          <h2>On the shelf right now.</h2>
+          <svg class="draw head-rule" viewBox="0 0 400 10" aria-hidden="true"><path d="M2 6 C 120 2, 260 2, 398 6" fill="none" stroke="#FF5B1F" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+        <a class="btn btn-sm btn-mag" href="/app/#buy">All offers <span class="arr">→</span></a>
+      </div>
+      <div class="offers" data-offers aria-busy="true">
+        <div class="skel skel-row"></div><div class="skel skel-row"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="foot"></footer>
+</div></div>
+
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/landing.js"></script>
+</body>
+</html>

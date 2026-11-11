@@ -1,0 +1,11 @@
+{
+  "name": "Brimstead",
+  "short_name": "Brimstead",
+  "icons": [
+    { "src": "/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#EFE9DD",
+  "background_color": "#EFE9DD",
+  "display": "browser"
+}

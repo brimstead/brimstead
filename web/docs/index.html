@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Docs · Brimstead</title>
+<meta name="description" content="How Brimstead works: writing and buying covered calls on Robinhood stock tokens, the Friday close settlement, refunds, fees, limits. Independent review completed; not a formal audit.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/docs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="Docs · Brimstead">
+<meta property="og:description" content="How Brimstead works: writing and buying covered calls on Robinhood stock tokens, the Friday close settlement, refunds, fees, limits. Independent review completed; not a formal audit.">
+<meta property="og:url" content="https://brimstead.xyz/docs/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:title" content="Docs · Brimstead">
+<meta name="twitter:description" content="How Brimstead works: writing and buying covered calls on Robinhood stock tokens, the Friday close settlement, refunds, fees, limits. Independent review completed; not a formal audit.">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body>
+<header id="nav"></header>
+<main class="page docs">
+  <div class="docs-grid">
+  <aside class="toc-side"><nav class="toc" aria-label="On this page"><p class="eyebrow">On this page</p>
+      <a href="#how">How it works</a><a href="#write">Writing</a><a href="#buy">Buying</a><a href="#settle">Settlement</a><a href="#examples">Payout examples</a><a href="#refund">Refunds</a><a href="#claim">Claims</a><a href="#fees">Fees</a><a href="#drip">BrimDrip</a><a href="#limits">Limits</a><a href="#contracts">Contracts</a><a href="#audit">Review status</a>
+  </nav></aside>
+  <article class="page-in">
+    <p class="eyebrow"><span class="pip"></span>Docs</p>
+    <h1>How Brimstead works.</h1>
+    <p class="lede">A covered-call vault for Robinhood's tokenized stocks on Robinhood Chain. Writers lock stock tokens and sell the upside above a strike for an ETH premium. Buyers pay that premium. The Chainlink close on Friday decides who gets what.</p>
+
+    <h2 id="how">How it works</h2>
+    <ol>
+      <li><b>Write.</b> A holder locks stock tokens in BrimVault, picks a strike K (strictly above the live Chainlink price) and a weekly expiry (a Friday, 21:00 UTC), and sets a premium per token in ETH.</li>
+      <li><b>Buy.</b> A buyer pays the ETH premium for some or all of those tokens. The premium is held in the vault until the offer resolves.</li>
+      <li><b>Settle.</b> After expiry anyone can settle the offer at the Friday close price P.</li>
+      <li><b>Claim.</b> If P is above K, each buyer receives <code>amount × (P − K) / P</code> tokens and the writer keeps the rest. Otherwise the writer gets every token back. The writer receives the premium minus a protocol fee of at most 1%.</li>
+    </ol>
+    <p>There is no borrowing, no lending to a third party and no liquidation. Every call is fully backed by the writer's own tokens, and a token only ever leaves the vault back to its writer, or to a buyer as the part above the strike.</p>
+
+    <h2 id="write">Writing a call</h2>
+    <ul>
+      <li>Only the stock tokens listed in the vault at deploy can be written: NVDA, TSLA, AAPL, SPY, QQQ, MSFT, AMZN, GOOGL, GLD, SPCX and MSTR, each with its Chainlink feed. The list is fixed.</li>
+      <li>The strike must be <b>strictly above</b> the latest Chainlink price; a strike equal to it is rejected. Every call therefore starts out of the money and can be bought at the price it was written at.</li>
+      <li>The expiry must be a Friday 21:00 UTC between 1 and 28 days away.</li>
+      <li><b>Writing needs a fresh price</b>: the latest Chainlink round must be no older than 26 hours. Stock feeds do not print over the weekend, so writing pauses then. The app shows "Market closed — writing reopens with the Monday print".</li>
+      <li>You can withdraw unsold tokens at any time, before or after expiry. Tokens a buyer has paid for stay locked until the offer resolves.</li>
+      <li>A premium of zero is allowed. Tokens that take a fee on transfer are refused.</li>
+    </ul>
+
+    <h2 id="buy">Buying upside</h2>
+    <ul>
+      <li>Buying closes 2 hours before expiry.</li>
+      <li><b>Only out-of-the-money calls can be bought.</b> The live Chainlink price must be strictly below the strike; at or above it, the vault rejects the purchase, so nobody can buy an in-the-money call at a premium set earlier. There is no repricing: a writer who wants a new premium withdraws the unsold tokens and writes again.</li>
+      <li>This check needs a Chainlink round no older than 4 days, which still works over a normal weekend.</li>
+      <li>The premium is <code>amount × premium per token</code>, rounded up. Any extra ETH sent is returned in the same transaction.</li>
+      <li>Positions are not transferable.</li>
+    </ul>
+
+    <p><b>Weekend quotes.</b> Over the weekend, buys are checked against Friday's last Chainlink print. A writer's premium can therefore be stale against news that moves the stock before Monday's open. Writers can withdraw unsold tokens at any time to pull a quote.</p>
+
+    <h2 id="settle">Settlement: the Friday close</h2>
+    <p>The settlement price is the <b>last Chainlink round at or before Friday 21:00 UTC</b> for that stock. The contract accepts a round only if the next round of the same feed printed after 21:00 UTC, which proves it was the last one before the close. So settlement becomes possible as soon as the next round after expiry has printed: usually minutes after 21:00 UTC, because after-hours prints continue; failing that, at the Monday reopen. There is no deadline for that next round: if it prints late and nobody has taken the refund path first, settlement is still valid.</p>
+    <ul>
+      <li>Anyone can call settle; the app finds the right round for you.</li>
+      <li>The close round must be no older than 26 hours at expiry. If the market was shut all Friday (a holiday), there is no valid close and the offer goes to the refund path.</li>
+      <li>The close is the price <b>as last printed by Chainlink</b>, whose feeds update on a 0.5% move or every 24 hours. It can be up to 26 hours old and can differ from the true market close by about 0.5%.</li>
+      <li>On settle, the escrowed premium is credited to the writer minus the protocol fee, which is credited to the fee recipient. Both are withdrawn with <code>withdrawEth</code>.</li>
+    </ul>
+
+    <h2 id="examples">Payout examples</h2>
+    <p class="muted">Examples only, with round numbers. They are not prices, forecasts or offers.</p>
+    <div class="tbl-scroll"><table class="tbl">
+      <thead><tr><th>Example</th><th>Written</th><th>Strike K</th><th>Close P</th><th>Buyer receives</th><th>Writer keeps</th></tr></thead>
+      <tbody>
+        <tr><td>Below strike</td><td class="num">10</td><td class="num">$100</td><td class="num">$95</td><td class="num">0</td><td class="num">10 + premium</td></tr>
+        <tr><td>At strike</td><td class="num">10</td><td class="num">$100</td><td class="num">$100</td><td class="num">0</td><td class="num">10 + premium</td></tr>
+        <tr><td>Above strike</td><td class="num">10</td><td class="num">$100</td><td class="num">$110</td><td class="num">10 × 10/110 = 0.909</td><td class="num">9.091 + premium</td></tr>
+        <tr><td>Well above</td><td class="num">10</td><td class="num">$100</td><td class="num">$125</td><td class="num">10 × 25/125 = 2.000</td><td class="num">8.000 + premium</td></tr>
+      </tbody>
+    </table></div>
+    <p>"Premium" here means the premium paid by buyers minus the protocol fee. Token amounts are rounded down by the contract. The buyer receives stock tokens, not dollars.</p>
+
+    <h2 id="refund">Refunds (fallback)</h2>
+    <p>If no valid settlement price can exist, the offer is refunded in full: every buyer gets the whole premium back with no fee, and the writer gets every token back. The refund path opens 4 days after expiry and applies when:</p>
+    <ul>
+      <li>the issuer has paused the stock's oracle, or a corporate action (a scheduled change of the token's multiplier) falls around expiry;</li>
+      <li>the feed has not printed since expiry, or is stale;</li>
+      <li>no valid close exists, for example the feed was replaced after expiry or the last round before the close is older than 26 hours.</li>
+    </ul>
+    <p>The issuer's oracle-pause flag is checked at the moment the refund is called, not at expiry. A keeper settles offers as soon as the next Chainlink round after the close exists, which keeps that window short.</p>
+    <p>After 30 days any unresolved offer can be refunded with no conditions, so nothing is locked forever. From then on both paths are open and whoever calls first decides. A gap in the feed's rounds right after the close can only be resolved this way.</p>
+
+    <h2 id="claim">Claims</h2>
+    <ul>
+      <li>Claims are pulled: after settlement or refund, each buyer position and each writer offer is claimed once. Anyone can trigger a claim; the funds only go to the rightful owner.</li>
+      <li>Buyer and writer claims are independent. If one side's token transfer fails (for example the issuer blocked that address), the other side can still claim.</li>
+      <li>ETH that cannot be sent directly is credited and can be withdrawn later, to your own address or to another address you choose.</li>
+    </ul>
+
+    <h2 id="fees">Fees</h2>
+    <p>The protocol fee is <b>1% of the premium</b> (fixed at deploy; 1% is also the contract's maximum). It is taken only at settlement, never on refunds. The fee is credited to BrimDrip inside the vault and moved there by <code>withdrawEth</code>, which anyone can call; BrimDrip then streams it to $BRIM stakers. There are no other vault fees; you pay normal Robinhood Chain gas in ETH.</p>
+
+    <h2 id="drip">BrimDrip: staking $BRIM</h2>
+    <p>BrimDrip streams every wei of ETH it receives to $BRIM stakers, pro rata to stake, linearly over 7 days. Its ETH comes from the vault fee above, from Pons creator fees the team sends in by hand after launch, and from anyone who sends ETH to it.</p>
+    <ul>
+      <li><b>Small payments wait.</b> Incoming ETH first goes to a queue. A new 7-day stream (what is left of the current one plus the queue) starts only when at least <b>0.005 ETH</b> is queued, someone is staked and the token is set. Smaller amounts wait in the queue until they add up; they are never lost.</li>
+      <li><b>Start stream.</b> Anyone can start a stream with <code>kick()</code> once those conditions hold. It is needed after the first stake, because staking never starts a stream by itself. The <a href="/stake/">stake page</a> shows the button when it is possible.</li>
+      <li>Stake and unstake at any time. Rewards earned so far stay claimable after unstaking; claim whenever you like.</li>
+      <li>While nobody is staked, the stream is not given away: it goes back to the queue and restarts after the next stake.</li>
+      <li>The $BRIM address is set once, by the deployer, after launch. Staking opens then. That is the deployer's only power: it cannot touch the ETH. If it were ever set wrong, it could not be fixed, and both contracts would have to be deployed again.</li>
+      <li>No promised returns: the stream is only as large as the ETH that arrives.</li>
+    </ul>
+
+    <h2 id="limits">Limits</h2>
+    <ul>
+      <li><b>Chainlink stock feeds run 24/5.</b> They do not print over weekends and can be quiet on holidays. That is why writing pauses at the weekend and why settlement waits for the next round after the close.</li>
+      <li>Feeds price one stock token, which equals one share times the token's multiplier. Strikes are in the same unit.</li>
+      <li>The vault has no owner, no admin and no upgrade path. The stock list, fee and fee recipient cannot be changed after deploy. Nobody can pause it, and nobody can fix it either.</li>
+      <li>Robinhood (the token issuer) can pause the stock tokens, block addresses or pause the oracle. See <a href="/risks/">Risks</a>.</li>
+      <li>One offer has one strike and one expiry. There is no early exercise, no secondary market for positions and no partial settlement.</li>
+      <li>There is no sequencer uptime check. A Robinhood Chain outage delays settlement and claims; it does not change which round is the close.</li>
+    </ul>
+
+    <h2 id="contracts">Contracts</h2>
+    <dl class="kv" data-contracts></dl>
+
+    <h2 id="audit">Review status</h2>
+    <div class="note warn"><b>Independent review completed (no critical/high/medium findings); not a formal audit.</b> BrimVault and BrimDrip have unit, fuzz and mainnet-fork tests and an independent review, and their source is verified on Blockscout. There is no formal verification. A review lowers the risk; it does not remove it. Only use amounts you can afford to lose.</div>
+  </article>
+  </div>
+</main>
+<footer id="foot"></footer>
+<script type="module" src="/js/common.js"></script>
+<script type="module">
+  import { CONFIG } from '/config.js';
+  const ex = (a) => `<a href="${CONFIG.explorer}/address/${a}" target="_blank" rel="noopener"><code>${a}</code></a>`;
+  const tba = '<span class="tba">Contracts deploy before launch — address appears here</span>';
+  document.querySelector('[data-contracts]').innerHTML = `
+    <dt>BrimVault</dt><dd>${CONFIG.contracts.vault ? ex(CONFIG.contracts.vault) : tba}</dd>
+    <dt>BrimDrip</dt><dd>${CONFIG.contracts.drip ? ex(CONFIG.contracts.drip) : tba}</dd>
+    <dt>Deployer</dt><dd>${CONFIG.contracts.deployer ? ex(CONFIG.contracts.deployer) + '<br><span class="muted small">only power: BrimDrip.setToken, once</span>' : tba}</dd>
+    <dt>$BRIM</dt><dd>${CONFIG.ca ? ex(CONFIG.ca) : '<span class="tba">Not issued yet · launches 12 Nov 17:00 UTC</span>'}</dd>
+    <dt>Source</dt><dd>${CONFIG.links.repo ? `<a href="${CONFIG.links.repo}" target="_blank" rel="noopener">${CONFIG.links.repo}</a>` : '<span class="tba">to be announced</span>'}</dd>
+    <dt>Network</dt><dd>Robinhood Chain, chain id ${CONFIG.chainId} · <a href="${CONFIG.explorer}" target="_blank" rel="noopener">Blockscout</a></dd>`;
+</script>
+<script type="module">
+  // scroll-spy for the sticky table of contents
+  import { motionReady } from '/js/common.js';
+  motionReady.then((ok) => {
+    const links = [...document.querySelectorAll('.toc a')];
+    const toc = document.querySelector('.toc');
+    const set = (id) => links.forEach((a) => {
+      const on = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('on', on);
+      if (on && toc.scrollWidth > toc.clientWidth) toc.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' }); // mobile row
+    });
+    const heads = [...document.querySelectorAll('.docs h2[id]')];
+    if (ok && window.ScrollTrigger) {
+      heads.forEach((h, i) => ScrollTrigger.create({ trigger: h, start: 'top 45%', endTrigger: heads[i + 1] || 'main', end: heads[i + 1] ? 'top 45%' : 'bottom bottom',
+        onToggle: (st) => st.isActive && set(h.id) }));
+    } else {
+      const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && set(e.target.id)), { rootMargin: '0px 0px -55% 0px' });
+      heads.forEach((h) => io.observe(h));
+    }
+    if (heads[0]) set(heads[0].id);
+  });
+</script>
+</body>
+</html>

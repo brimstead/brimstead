@@ -1,0 +1,11 @@
+{
+  "name": "brimstead-keeper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Brimstead keeper: settles expired BrimVault offers at the Friday close (fallback when provably impossible), forwards fees to BrimDrip, kicks the stream",
+  "main": "keeper.mjs",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node keeper.mjs" },
+  "dependencies": { "viem": "2.57.3" }
+}

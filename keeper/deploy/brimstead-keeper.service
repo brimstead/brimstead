@@ -1,0 +1,36 @@
+# /etc/systemd/system/brimstead-keeper.service - one keeper run (settle expired offers, withdrawEth(BrimDrip), kick).
+# Started by brimstead-keeper.timer every 2 min. Oneshot with no Restart=, so a failure never crash-loops.
+# Key: encrypted Foundry keystore + password in /etc/brimstead-keeper/ (root:root 600), passed in via LoadCredential.
+# Mode and RPCs: /etc/brimstead-keeper/keeper.env (KEEPER_MODE=simulate|live).
+[Unit]
+Description=Brimstead keeper (BrimVault settle / fallback, fee forward, BrimDrip kick)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=brimstead-keeper
+Group=brimstead-keeper
+WorkingDirectory=/srv/brimstead-keeper
+ExecStart=/usr/bin/node /srv/brimstead-keeper/keeper.mjs
+Environment=NODE_ENV=production
+Environment=KEEPER_MODE=simulate
+EnvironmentFile=-/etc/brimstead-keeper/keeper.env
+LoadCredential=keystore:/etc/brimstead-keeper/keystore.json
+LoadCredential=password:/etc/brimstead-keeper/password
+StateDirectory=brimstead-keeper
+StateDirectoryMode=0750
+LogsDirectory=brimstead-keeper
+LogsDirectoryMode=0750
+TimeoutStartSec=300
+SyslogIdentifier=brimstead-keeper
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+MemoryMax=256M
+CPUQuota=50%

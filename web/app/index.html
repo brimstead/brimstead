@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App · Brimstead</title>
+<meta name="description" content="Write a covered call on a Robinhood stock token, buy upside for an ETH premium, settle at the Friday close and claim. Robinhood Chain 4663.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="Brimstead app · Write, buy, settle, claim">
+<meta property="og:description" content="Covered calls for tokenized stocks on Robinhood Chain.">
+<meta property="og:url" content="https://brimstead.xyz/app/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/app.css">
+<script type="importmap">
+{ "imports": { "viem": "https://cdn.jsdelivr.net/npm/viem@2.31.0/+esm" } }
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body class="app">
+<header id="nav"></header>
+<main class="page app-page">
+  <div class="app-in">
+    <div class="app-head">
+      <div>
+        <p class="eyebrow"><span class="pip"></span>BrimVault · Robinhood Chain 4663</p>
+        <h1>The vault.</h1>
+      </div>
+      <div class="wallet-box">
+        <span class="net mono" data-net>Robinhood Chain · 4663</span>
+        <button class="btn btn-ink btn-sm" data-connect type="button">Connect wallet</button>
+      </div>
+    </div>
+
+    <div class="deploy-state" data-deploy-state></div>
+    <div class="app-ca" data-ca-strip></div>
+
+    <nav class="tabs" role="tablist" aria-label="Vault actions">
+      <a role="tab" href="#write" data-tab="write">Write a call</a>
+      <a role="tab" href="#buy" data-tab="buy">Buy upside</a>
+      <a role="tab" href="#portfolio" data-tab="portfolio">Portfolio</a>
+      <a role="tab" href="#settle" data-tab="settle">Settle &amp; claim</a>
+      <span class="tab-ind" data-tab-ind aria-hidden="true"></span>
+    </nav>
+
+    <!-- WRITE -->
+    <section class="panel" id="write" data-panel="write" role="tabpanel">
+      <div class="grid2">
+        <form class="card form" data-write-form autocomplete="off">
+          <h2>Write a covered call</h2>
+          <p class="muted">Lock stock tokens until the Friday close. Buyers pay you the premium in ETH for the part above your strike.</p>
+          <div class="market" data-market></div>
+          <label>Stock token
+            <select name="stock" data-stock></select>
+          </label>
+          <div class="live-line"><span>Chainlink price per token</span><b class="mono cobalt" data-w-price>reading…</b></div>
+          <div class="live-line sub"><span>Last round</span><span class="mono" data-w-time>·</span></div>
+          <label class="field">Amount to lock <span class="hint" data-w-bal></span>
+            <input name="amount" inputmode="decimal" placeholder="e.g. 10" required aria-describedby="m-amount">
+            <span class="field-msg" id="m-amount" data-msg="amount"></span>
+          </label>
+          <label class="field">Strike, USD per token <span class="hint">strictly above the live price</span>
+            <input name="strike" inputmode="decimal" placeholder="e.g. 190.00" required aria-describedby="m-strike">
+            <span class="field-msg" id="m-strike" data-msg="strike"></span>
+          </label>
+          <label class="field">Expiry <span class="hint">Friday 21:00 UTC</span>
+            <select name="expiry" data-expiry></select>
+          </label>
+          <label class="field">Premium per token, ETH
+            <input name="premium" inputmode="decimal" placeholder="e.g. 0.002" required aria-describedby="m-premium">
+            <span class="field-msg" id="m-premium" data-msg="premium"></span>
+          </label>
+          <p class="form-err" data-w-err role="alert"></p>
+          <div class="form-actions">
+            <button class="btn btn-hot" type="submit" data-w-submit>Write offer</button>
+          </div>
+          <p class="fine">Two wallet steps: approve the token for the vault, then write. You can withdraw unsold tokens at any time; sold tokens stay locked until the offer resolves.</p>
+        </form>
+        <aside class="card preview summary" data-w-preview>
+          <h3>What happens at the close</h3>
+          <p class="muted">Fill in amount, strike and premium to see the outcomes. These rows are examples computed from your inputs, not forecasts.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- BUY -->
+    <section class="panel" id="buy" data-panel="buy" role="tabpanel" hidden>
+      <div class="panel-head">
+        <h2>Open offers</h2>
+        <div class="chips" data-chips></div>
+      </div>
+      <p class="muted small">A call can be bought while the live Chainlink price is below its strike and more than 2 hours remain before expiry. The premium is held in the vault until the offer resolves.</p>
+      <div class="grid2 buy-grid">
+        <div class="list" data-buy-list><div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div></div>
+        <aside class="card summary" data-buy-summary>
+          <h3>Your purchase</h3>
+          <p class="muted small">Enter an amount on an offer to see what you pay and what you can receive.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section class="panel" id="portfolio" data-panel="portfolio" role="tabpanel" hidden>
+      <div class="panel-head"><h2>Your portfolio</h2><button class="btn btn-sm" type="button" data-refresh>Refresh</button></div>
+      <div class="owed card" data-owed></div>
+      <h3 class="sub-h">Offers you wrote</h3>
+      <div class="list" data-my-offers></div>
+      <h3 class="sub-h">Calls you bought</h3>
+      <div class="list" data-my-positions></div>
+    </section>
+
+    <!-- SETTLE -->
+    <section class="panel" id="settle" data-panel="settle" role="tabpanel" hidden>
+      <div class="panel-head"><h2>Settle &amp; claim</h2></div>
+      <p class="muted small">Anyone can settle an expired offer. The price used is the last Chainlink round at or before Friday 21:00 UTC; settling becomes possible once the next round has printed. If no valid close price can exist (feed paused or stale, or a corporate action at expiry), a refund opens 4 days after expiry, and unconditionally after 30 days.</p>
+      <div class="list" data-settle-list></div>
+    </section>
+  </div>
+</main>
+<div class="toasts" data-toasts role="status" aria-live="polite"></div>
+<footer id="foot"></footer>
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

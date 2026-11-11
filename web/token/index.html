@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>$BRIM · Brimstead</title>
+<meta name="description" content="$BRIM launches on Pons on 12 Nov 2026 at 17:00 UTC. Creator tax 2%. Stake in BrimDrip for ETH streamed over 7 days. No promised returns.">
+<meta name="theme-color" content="#EFE9DD">
+<link rel="canonical" href="https://brimstead.xyz/token/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brimstead">
+<meta property="og:title" content="$BRIM · Brimstead">
+<meta property="og:description" content="$BRIM launches on Pons on 12 Nov 2026 at 17:00 UTC. Creator tax 2%. Stake in BrimDrip for ETH streamed over 7 days. No promised returns.">
+<meta property="og:url" content="https://brimstead.xyz/token/">
+<meta property="og:image" content="https://brimstead.xyz/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@brimsteadxyz">
+<meta name="twitter:title" content="$BRIM · Brimstead">
+<meta name="twitter:description" content="$BRIM launches on Pons on 12 Nov 2026 at 17:00 UTC. Creator tax 2%. Stake in BrimDrip for ETH streamed over 7 days. No promised returns.">
+<meta name="twitter:image" content="https://brimstead.xyz/og.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Ubuntu+Sans+Mono:wght@400;500&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+</head>
+<body>
+<header id="nav"></header>
+<main class="page">
+  <article class="page-in">
+    <p class="eyebrow"><span class="pip hot"></span>Token</p>
+    <h1>$BRIM</h1>
+    <p class="lede">The Brimstead token. It launches on Pons, Robinhood Chain, on 12 Nov 2026 at 17:00 UTC.</p>
+    <div class="card" style="margin:28px 0"><div data-ca-strip></div></div>
+
+    <dl class="kv" data-stagger>
+      <dt>Ticker</dt><dd>$BRIM</dd>
+      <dt>Launch</dt><dd>12 Nov 2026, 17:00 UTC, on Pons</dd>
+      <dt>Contract address</dt><dd data-ca-line></dd>
+      <dt>Creator tax</dt><dd>2% on trades, set at launch on Pons</dd>
+      <dt>Buy</dt><dd data-buy></dd>
+      <dt>X</dt><dd data-x></dd>
+      <dt>BrimDrip (staking)</dt><dd data-drip></dd>
+      <dt>BrimVault (fee source)</dt><dd data-vault></dd>
+      <dt>Deployer</dt><dd data-deployer></dd>
+    </dl>
+
+    <h2>What $BRIM is for</h2>
+    <p><b>Staking in BrimDrip.</b> Stake $BRIM and receive ETH. Every wei of ETH that BrimDrip receives is streamed to stakers, pro rata to stake, linearly over 7 days. The ETH comes from:</p>
+    <ul>
+      <li>the vault's protocol fee: 1% of each premium, taken when an offer settles (never on refunds);</li>
+      <li>Pons creator fees from $BRIM trading, which the team sends to BrimDrip by hand after launch.</li>
+    </ul>
+    <p>A new stream starts once at least 0.005 ETH is queued; smaller amounts wait until they add up. Staking opens once the $BRIM address is set in BrimDrip, which can be done only once, right after launch. Using the vault does not require $BRIM. Any other use is to be announced.</p>
+    <p><a class="btn btn-sm" href="/stake/">Go to staking <span class="arr">→</span></a></p>
+
+    <h2>No promised returns</h2>
+    <div class="note warn">$BRIM is not an investment product and nothing here is a promise of profit. The ETH stream depends entirely on vault usage and on the creator fees forwarded; it can be small or zero. The token price can fall to zero. Contracts: Independent review completed (no critical/high/medium findings); not a formal audit.</div>
+  </article>
+</main>
+<footer id="foot"></footer>
+<script type="module" src="/js/common.js"></script>
+<script type="module">
+  import { CONFIG } from '/config.js';
+  import { hasCa, launchLabel } from '/js/common.js';
+  const ex = (a) => `<a href="${CONFIG.explorer}/address/${a}" target="_blank" rel="noopener"><code>${a}</code></a>`;
+  document.querySelector('[data-ca-line]').innerHTML = hasCa() ? ex(CONFIG.ca) : `<span class="tba">Not issued yet · launches ${launchLabel()}</span>`;
+  document.querySelector('[data-x]').innerHTML = CONFIG.links.x ? `<a href="${CONFIG.links.x}" target="_blank" rel="noopener">${CONFIG.links.xHandle}</a>` : '<span class="tba">to be announced</span>';
+  const dep = '<span class="tba">deploys before launch</span>';
+  document.querySelector('[data-drip]').innerHTML = CONFIG.contracts.drip ? ex(CONFIG.contracts.drip) : dep;
+  document.querySelector('[data-vault]').innerHTML = CONFIG.contracts.vault ? ex(CONFIG.contracts.vault) : dep;
+  document.querySelector('[data-deployer]').innerHTML = CONFIG.contracts.deployer
+    ? `${ex(CONFIG.contracts.deployer)}<br><span class="muted small">deployer, only power: setToken once</span>` : dep;
+  document.querySelector('[data-buy]').innerHTML = hasCa()
+    ? `<a href="${CONFIG.buyUrl(CONFIG.ca)}" target="_blank" rel="noopener">$BRIM on Pons</a>`
+    : `<span class="tba">The Pons link appears here at ${launchLabel()}</span>`;
+</script>
+</body>
+</html>
